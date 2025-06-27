@@ -1,2 +1,42 @@
-.venv/
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# macOS system files
 .DS_Store
+
+# VS Code project settings (optional)
+.vscode/
+
+# Python virtual environments
+.venv/
+env/
+venv/
+
+# Environment files
+.env
+*.env
+
+# Output and build folders
+build/
+dist/
+*.egg-info/
+
+# Test or coverage files
+htmlcov/
+.coverage
+.cache/
+*.log
+
+# Figures and reports (optional — only ignore if you don’t want to track generated charts)
+figures/
+*.png
+*.pdf
+
+# Data files (optional — ignore if files are too large or sensitive)
+data/raw/
+data/*.zip
