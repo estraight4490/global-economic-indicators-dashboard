@@ -3,7 +3,7 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-def load_data(csv_file_loc, skip_rows=4):
+def load_data(csv_file_loc: str, skip_rows: int = 4) -> pd.DataFrame:
     """
     Load raw data from a csv and return the data.
 
