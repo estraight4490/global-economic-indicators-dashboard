@@ -32,6 +32,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from src.load_data import load_data
+from src.clean_data import clean_data
+from src.data_helpers import prepare_plot_data, set_country_index
+from src.plot_gdp import plot_gdp_trends
 
 logging.basicConfig(
     filename="logs/app.log",
@@ -39,24 +42,26 @@ logging.basicConfig(
     format='%(asctime)s [%(levelname)s] %(name)s: %(message)s'
 )
 
-gdp_csv_loc = "./data/GDP/API_NY.GDP.MKTP.CD_DS2_en_csv_v2_127285.csv"
+def main():
+    gdp_csv_loc = "./data/GDP/API_NY.GDP.MKTP.CD_DS2_en_csv_v2_127285.csv"
+    COUNTRIES = ["United States", "China", "Russian Federation", "Germany",
+                 "France", "United Kingdom", "Japan", "Iran, Islamic Rep.", "Ireland"]
+    START_YEAR = 2000
+    END_YEAR = 2023
+    years = list(range(START_YEAR, END_YEAR + 1))
 
-gdp = load_data(gdp_csv_loc)
-logging.info(f"Loaded raw data from {gdp_csv_loc}")
-gdp = gdp.set_index("Country Name")
-# countries_set_gdp = gdp.loc[["United States", "Germany", "France", "United Kingdom", "Japan", "Iran, Islamic Rep.", "Ireland"], "2000":"2024"].astype("float").plot()
+    gdp = load_data(gdp_csv_loc)
+    logging.info(f"Loaded raw data from {gdp_csv_loc}")
+    
+    gdp = clean_data(gdp)
+    logging.info(f"Cleaned data from set {gdp_csv_loc}")
+    
+    gdp = set_country_index(gdp)
 
-countries = ["United States", "Germany", "France", "United Kingdom", "Japan", "Iran, Islamic Rep.", "Ireland"]
-years = [str(y) for y in range(2000, 2024)]
+    gdp_plot = prepare_plot_data(gdp, COUNTRIES, str(START_YEAR), str(END_YEAR))
+    
+    plot_gdp_trends(gdp_plot, COUNTRIES, years)
+    
 
-for country in countries:
-    gdp_values = gdp.loc[country, years].astype(float)
-    plt.plot(years, gdp_values, label=country)
-  
-plt.title("GDP Trends (Current US$)")
-plt.ylabel("GDP")
-plt.xlabel("Year")
-plt.xticks(rotation=45)
-plt.legend(title="Country", bbox_to_anchor=(1.05, 1), loc="upper left")
-plt.tight_layout()
-plt.show()
+if __name__ == "__main__":
+    main()
