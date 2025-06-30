@@ -40,3 +40,6 @@ figures/
 # Data files (optional — ignore if files are too large or sensitive)
 data/raw/
 data/*.zip
+
+# Log files
+logs/*.log
