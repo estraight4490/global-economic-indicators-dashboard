@@ -27,14 +27,15 @@ Notes:
     - Known limitations
 """
 
+import os
 import logging
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 from src.load_data import load_data
 from src.clean_data import clean_data
 from src.data_helpers import prepare_plot_data, set_country_index
 from src.plot_gdp import plot_gdp_trends
+
+os.makedirs("logs", exist_ok=True)
+os.makedirs("figures", exist_ok=True)
 
 logging.basicConfig(
     filename="logs/app.log",
@@ -49,18 +50,21 @@ def main():
     START_YEAR = 2000
     END_YEAR = 2023
     years = list(range(START_YEAR, END_YEAR + 1))
+    
+    try:
+        gdp = load_data(gdp_csv_loc)
+        logging.info(f"Loaded raw data from {gdp_csv_loc}")
+        
+        gdp = clean_data(gdp)
+        logging.info(f"Cleaned data from set {gdp_csv_loc}")
+        
+        gdp = set_country_index(gdp)
 
-    gdp = load_data(gdp_csv_loc)
-    logging.info(f"Loaded raw data from {gdp_csv_loc}")
-    
-    gdp = clean_data(gdp)
-    logging.info(f"Cleaned data from set {gdp_csv_loc}")
-    
-    gdp = set_country_index(gdp)
-
-    gdp_plot = prepare_plot_data(gdp, COUNTRIES, str(START_YEAR), str(END_YEAR))
-    
-    plot_gdp_trends(gdp_plot, COUNTRIES, years)
+        gdp_plot = prepare_plot_data(gdp, COUNTRIES, str(START_YEAR), str(END_YEAR))
+        
+        plot_gdp_trends(gdp_plot, COUNTRIES, years)
+    except Exception as e:
+        logging.error(f"Fatal error in main pipeline: {e}", exc_info=True)
     
 
 if __name__ == "__main__":
