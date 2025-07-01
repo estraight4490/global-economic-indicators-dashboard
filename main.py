@@ -34,6 +34,7 @@ from src.clean_data import clean_data
 from src.data_helpers import prepare_plot_data, set_country_index, slice_dataframe
 from src.plot_gdp import plot_gdp_trends
 from src.stats import correlation_analysis
+from src.plot_stats import plot_correlations
 
 os.makedirs("logs", exist_ok=True)
 os.makedirs("figures", exist_ok=True)
@@ -81,6 +82,8 @@ def main():
         print(gdp_inflation_correlation_analysis)
         gdp_inflation_correlation_analysis.name = "Correlation Coefficient"
         gdp_inflation_correlation_analysis.to_csv("outputs/correlation_results.csv", header=True)
+        
+        plot_correlations(gdp_inflation_correlation_analysis, title="GDP and Inflation Correlation")
         
     except Exception as e:
         logging.error(f"Fatal error in main pipeline: {e}", exc_info=True)
