@@ -33,8 +33,8 @@ from src.load_data import load_data
 from src.clean_data import clean_data
 from src.data_helpers import prepare_plot_data, set_country_index, slice_dataframe
 from src.plot_gdp import plot_gdp_trends
-from src.stats import correlation_analysis, linear_regression
-from src.plot_stats import plot_correlations
+from src.stats import correlation_analysis, linear_regression, time_series_decomposition
+from src.plot_stats import plot_correlations, plot_time_series_decomposition
 from src.export_utils import export_correlation_to_csv
 
 os.makedirs("logs", exist_ok=True)
@@ -82,20 +82,23 @@ def main():
         inflation_mini = slice_dataframe(inflation, COUNTRIES, START_YEAR, END_YEAR)
 
         # Plot the GDP on a line graph
-        gdp_plot = prepare_plot_data(gdp, COUNTRIES, str(START_YEAR), str(END_YEAR))
-        plot_gdp_trends(gdp_plot, COUNTRIES, years)
+        # gdp_plot = prepare_plot_data(gdp, COUNTRIES, str(START_YEAR), str(END_YEAR))
+        # plot_gdp_trends(gdp_plot, COUNTRIES, years)
         
-        # Generate correlation analysis data for GDP and inflation and export to CSV and a bar chart .png file
-        gdp_inflation_correlation_analysis = correlation_analysis(gdp_mini, inflation_mini)
-        export_correlation_to_csv(gdp_inflation_correlation_analysis)
-        plot_correlations(gdp_inflation_correlation_analysis, title="GDP and Inflation Correlation")
+        # # Generate correlation analysis data for GDP and inflation and export to CSV and a bar chart .png file
+        # gdp_inflation_correlation_analysis = correlation_analysis(gdp_mini, inflation_mini)
+        # export_correlation_to_csv(gdp_inflation_correlation_analysis)
+        # plot_correlations(gdp_inflation_correlation_analysis, title="GDP and Inflation Correlation")
         
-        # Linear regression
-        linear_regression(gdp_mini, inflation_mini)
+        # # Linear regression
+        # linear_regression(gdp_mini, inflation_mini)
+        
+        # Time series decompose
+        decomposition_result = time_series_decomposition(gdp, "Ireland", "2000", "2023")
+        plot_time_series_decomposition(decomposition_result, "Ireland")
         
     except Exception as e:
         logging.error(f"Fatal error in main pipeline: {e}", exc_info=True)
     
-
 if __name__ == "__main__":
     main()

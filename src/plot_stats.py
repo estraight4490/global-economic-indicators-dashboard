@@ -3,8 +3,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import logging
+from statsmodels.tsa.seasonal import DecomposeResult
 
 logger = logging.getLogger(__file__)
+
+DIR = "figures/"
 
 # TODO: Decide output_path and filename handling
 def plot_correlations(correlations: pd.Series, title: str = "Correlation", output_path: str = "figures/correlation_plot.png"):
@@ -17,7 +20,6 @@ def plot_correlations(correlations: pd.Series, title: str = "Correlation", outpu
         output_path (str): File path to save the chart.
     """
     try:
-        dir = "figures/"
         filename = f"{title.replace(' ', '_').lower()}_plot.png"
         correlations = correlations.sort_values()
         
@@ -34,8 +36,15 @@ def plot_correlations(correlations: pd.Series, title: str = "Correlation", outpu
         plt.title(title)
         plt.axvline(0, color="gray", linestyle="--")
         plt.tight_layout()
-        plt.savefig(dir + filename, bbox_inches="tight")
+        plt.savefig(DIR + filename, bbox_inches="tight")
         plt.show()
     except Exception as e:
         logger.error(f"plot_correlations: Unexpected error: {e}")
         
+
+def plot_time_series_decomposition(result: DecomposeResult, country: str):
+    result.plot()
+    plt.suptitle(f"Time Series Decomposition of GDP - {country}", fontsize=16)
+    plt.tight_layout()
+    plt.savefig(f"{DIR}decomposition_results_{country}.png", bbox_inches="tight")
+    plt.show()

@@ -3,8 +3,9 @@ import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score, mean_squared_error
 import statsmodels.api as sm
-from statsmodels.tsa.seasonal import seasonal_decompose
+from statsmodels.tsa.seasonal import seasonal_decompose, DecomposeResult
 import warnings
+import matplotlib.pyplot as plt
 
 logger = logging.getLogger(__name__)
 
@@ -58,8 +59,10 @@ def linear_regression(X: pd.DataFrame, y: pd.DataFrame, output_path: str = "outp
     logger.info(f"Regression report written to: {output_path}")
 
 
-def time_series_decompose():
-    print("t")
+def time_series_decomposition(df: pd.DataFrame, country: str, start_date: str, end_date: str) -> DecomposeResult:
+    gdp_series = df.loc[country, start_date:end_date].astype(float)
+    gdp_series.index = pd.to_datetime(gdp_series.index, format="%Y")
+    return seasonal_decompose(gdp_series, model="additive", period=1)
 
 def growth_rate_analysis():
     print("g")
