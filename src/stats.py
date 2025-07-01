@@ -5,7 +5,6 @@ from sklearn.metrics import r2_score, mean_squared_error
 import statsmodels.api as sm
 from statsmodels.tsa.seasonal import seasonal_decompose, DecomposeResult
 import warnings
-import matplotlib.pyplot as plt
 
 logger = logging.getLogger(__name__)
 
@@ -69,11 +68,26 @@ def time_series_decomposition(df: pd.DataFrame, countries: list[str], start_date
     
     return seasonal_decomposition_list
 
-def growth_rate_analysis():
-    print("g")
+def growth_rate_analysis(df: pd.DataFrame, countries: list[str], start_date: str, end_date: str) -> list[float]:
+    countries_growth_rates = {}
+    for country in countries:
+        growth_rates = []
+        df_values = df.loc[country, start_date:end_date].astype(float)
+        for current, next_val in zip(df_values, df_values[1:]):
+            growth_rates.append(growth_rate_formula(current, next_val))
+    
+        countries_growth_rates[country] = growth_rates
+        
+    return countries_growth_rates
+
+            
+
 
 def rolling_statistics():
     print("r")
     
 def clustering():
     print("c")
+
+def growth_rate_formula(beginning_value: float, end_value: float) -> float:
+    return ((end_value - beginning_value) / beginning_value) * 100

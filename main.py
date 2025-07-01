@@ -33,8 +33,8 @@ from src.load_data import load_data
 from src.clean_data import clean_data
 from src.data_helpers import prepare_plot_data, set_country_index, slice_dataframe
 from src.plot_gdp import plot_gdp_trends
-from src.stats import correlation_analysis, linear_regression, time_series_decomposition
-from src.plot_stats import plot_correlations, plot_time_series_decomposition
+from src.stats import correlation_analysis, linear_regression, time_series_decomposition, growth_rate_analysis
+from src.plot_stats import plot_correlations, plot_time_series_decomposition, plot_growth_rate_analysis
 from src.export_utils import export_correlation_to_csv
 
 os.makedirs("logs", exist_ok=True)
@@ -94,9 +94,13 @@ def main():
         # linear_regression(gdp_mini, inflation_mini)
         
         # Time series decompose
-        countries_decomp = ["United States", "Russian Federation", "Ireland"]
-        decomposition_result = time_series_decomposition(gdp, countries_decomp, "2000", "2023")
-        plot_time_series_decomposition(decomposition_result, countries_decomp)
+        # countries_decomp = ["United States", "Russian Federation", "Ireland"]
+        # decomposition_result = time_series_decomposition(gdp, countries_decomp, "2000", "2023")
+        # plot_time_series_decomposition(decomposition_result, countries_decomp)
+        
+        # Growth rate analysis
+        growth_rates = growth_rate_analysis(gdp, ["Ireland", "United States"], str(START_YEAR), str(END_YEAR))
+        plot_growth_rate_analysis(growth_rates, list(range(START_YEAR, END_YEAR)))
         
     except Exception as e:
         logging.error(f"Fatal error in main pipeline: {e}", exc_info=True)

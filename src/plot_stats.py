@@ -1,5 +1,6 @@
 
 import matplotlib.pyplot as plt
+from matplotlib.ticker import PercentFormatter
 import seaborn as sns
 import pandas as pd
 import logging
@@ -52,3 +53,20 @@ def plot_time_series_decomposition(results: list[DecomposeResult], countries: li
         plt.tight_layout()
         plt.savefig(f"{DIR}decomposition_results_{country}.png", bbox_inches="tight")
         plt.show()
+        
+def plot_growth_rate_analysis(countries_growth_rates: dict, years: list[int]) -> None:
+    for country in countries_growth_rates:
+        growth_rates = countries_growth_rates[country]
+        plt.plot(years, growth_rates, label=country)
+
+    plt.gca().yaxis.set_major_formatter(PercentFormatter(xmax=100))
+    plt.title("Growth Rate Analysis (Current US$)")
+    plt.ylabel("Growth Rate")
+    plt.xlabel("Year")
+    plt.xticks(rotation=45)
+    plt.legend(title="Country", bbox_to_anchor=(1.05, 1), loc="upper left")
+    plt.tight_layout()
+    plt.savefig("figures/growth_rate_analysis.png", bbox_inches="tight")
+    plt.show()
+        
+        
