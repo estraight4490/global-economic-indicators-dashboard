@@ -3,6 +3,12 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
+def slice_dataframe(df: pd.DataFrame, countries: list, start_year: str, end_year: str) -> pd.DataFrame:
+    try:
+        return df.loc[countries, str(start_year):str(end_year)].copy()
+    except Exception as e:
+        logger.error(f"slice_dataframe: Unexpected error: {e}")
+        
 def prepare_plot_data(df: pd.DataFrame, countries: list, start_year: str, end_year: str):
     """
         Prepare data for matplotlib
