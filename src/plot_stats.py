@@ -2,7 +2,6 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
-import os
 import logging
 
 logger = logging.getLogger(__file__)
@@ -20,7 +19,6 @@ def plot_correlations(correlations: pd.Series, title: str = "Correlation", outpu
     try:
         dir = "figures/"
         filename = f"{title.replace(" ", "_").lower()}_plot.png"
-        os.makedirs("figures", exist_ok=True)
         correlations = correlations.sort_values()
         
         plt.figure(figsize=(10, 6))
