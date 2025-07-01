@@ -11,7 +11,7 @@ Created:
     2025-06-27
 
 Python Version:
-    3.13.5
+    3.11.9
 
 Dependencies:
     - pandas
@@ -33,9 +33,10 @@ from src.load_data import load_data
 from src.clean_data import clean_data
 from src.data_helpers import prepare_plot_data, set_country_index, slice_dataframe
 from src.plot_gdp import plot_gdp_trends
-from src.stats import correlation_analysis, linear_regression, time_series_decomposition, growth_rate_analysis
-from src.plot_stats import plot_correlations, plot_time_series_decomposition, plot_growth_rate_analysis
+from src.stats import correlation_analysis, linear_regression, time_series_decomposition, growth_rate_analysis, rolling_statistics
+from src.plot_stats import plot_correlations, plot_time_series_decomposition, plot_growth_rate_analysis, plot_rolling_statistics
 from src.export_utils import export_correlation_to_csv
+from src.analysis_utils import format_stats_as_dataframe
 
 os.makedirs("logs", exist_ok=True)
 os.makedirs("figures", exist_ok=True)
@@ -99,8 +100,13 @@ def main():
         # plot_time_series_decomposition(decomposition_result, countries_decomp)
         
         # Growth rate analysis
-        growth_rates = growth_rate_analysis(gdp, ["Ireland", "United States"], str(START_YEAR), str(END_YEAR))
-        plot_growth_rate_analysis(growth_rates, list(range(START_YEAR, END_YEAR)))
+        # growth_rates = growth_rate_analysis(gdp, ["Ireland", "United States"], str(START_YEAR), str(END_YEAR))
+        # plot_growth_rate_analysis(growth_rates, list(range(START_YEAR, END_YEAR)))
+        
+        # Rolling statistics
+        rolling_stats = rolling_statistics(gdp, ["Ireland"], str(START_YEAR), str(END_YEAR), 4)
+        formatted_rolling_stats = format_stats_as_dataframe(rolling_stats)
+        plot_rolling_statistics(formatted_rolling_stats)
         
     except Exception as e:
         logging.error(f"Fatal error in main pipeline: {e}", exc_info=True)

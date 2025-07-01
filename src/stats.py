@@ -83,11 +83,25 @@ def growth_rate_analysis(df: pd.DataFrame, countries: list[str], start_date: str
             
 
 
-def rolling_statistics():
-    print("r")
-    
+def rolling_statistics(df: pd.DataFrame, countries: list[str], start_date: str, end_date: str, years_window: int = 3) -> dict:
+    rolling_stats = {}
+    for country in countries:
+        values = df.loc[country, start_date:end_date].astype(float)
+        values.index = values.index.astype(int)
+        rolling_stats[country] = {
+            "mean": values.rolling(window=years_window).mean(),
+            "std": values.rolling(window=years_window).std(),
+            "median": values.rolling(window=years_window).median(),
+            "variance": values.rolling(window=years_window).var(),
+            "skew": values.rolling(window=years_window).skew(),
+            "kurtosis": values.rolling(window=years_window).kurt()
+        }
+        
+    return rolling_stats
+
+# TODO: Add clustering
 def clustering():
-    print("c")
+    pass
 
 def growth_rate_formula(beginning_value: float, end_value: float) -> float:
     return ((end_value - beginning_value) / beginning_value) * 100

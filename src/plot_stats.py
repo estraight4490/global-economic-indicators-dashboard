@@ -66,7 +66,42 @@ def plot_growth_rate_analysis(countries_growth_rates: dict, years: list[int]) ->
     plt.xticks(rotation=45)
     plt.legend(title="Country", bbox_to_anchor=(1.05, 1), loc="upper left")
     plt.tight_layout()
-    plt.savefig("figures/growth_rate_analysis.png", bbox_inches="tight")
+    plt.savefig(f"{DIR}growth_rate_analysis.png", bbox_inches="tight")
     plt.show()
+
+# TODO: Refactor and add in other rolling stats charting options
+def plot_rolling_statistics(countries_stats: pd.DataFrame) -> None:
+    print("plot_rolling_statistics")
+    years = countries_stats["Year"].tolist()
+    
+    for country in countries_stats["Country"].unique():
+        country_mean_data = countries_stats[countries_stats["Country"] == country]["Mean"]
+        plt.plot(years, country_mean_data, label=country)
         
+    plt.title("Rolling Statistics: Mean (Current US$)")
+    plt.ylabel("Mean")
+    plt.xlabel("Year")
+    plt.xticks(rotation=45)
+    plt.legend(title="Country", bbox_to_anchor=(1.05, 1), loc="upper left")
+    plt.tight_layout()
+    plt.savefig(f"{DIR}rolling_statistics_mean.png", bbox_inches="tight")
+    plt.show()
+    
+    for country in countries_stats["Country"].unique():
+        country_std_data = countries_stats[countries_stats["Country"] == country]["Std"]
+        plt.plot(years, country_std_data, label=country)
+        
+    plt.title("Rolling Statistics: Std. (Current US$)")
+    plt.ylabel("Std.")
+    plt.xlabel("Year")
+    plt.xticks(rotation=45)
+    plt.legend(title="Country", bbox_to_anchor=(1.05, 1), loc="upper left")
+    plt.tight_layout()
+    plt.savefig(f"{DIR}rolling_statistics_std.png", bbox_inches="tight")
+    plt.show()
+    # TODO: Put mean of every country on a line graph together. Same for std.
+    
+    # ireland_mean_data = countries_stats.loc[countries_stats["Country"] == "Ireland", "mean"]
+    # ireland_mean_data = countries_stats.loc["Country"]
+    
         
