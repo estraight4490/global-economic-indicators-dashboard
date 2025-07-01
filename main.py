@@ -33,13 +33,13 @@ from src.load_data import load_data
 from src.clean_data import clean_data
 from src.data_helpers import prepare_plot_data, set_country_index, slice_dataframe
 from src.plot_gdp import plot_gdp_trends
-from src.stats import correlation_analysis
+from src.stats import correlation_analysis, linear_regression
 from src.plot_stats import plot_correlations
 from src.export_utils import export_correlation_to_csv
 
 os.makedirs("logs", exist_ok=True)
 os.makedirs("figures", exist_ok=True)
-os.makedirs("outputs", exist_ok=True)
+os.makedirs("output", exist_ok=True)
 
 logging.basicConfig(
     filename="logs/app.log",
@@ -89,6 +89,9 @@ def main():
         gdp_inflation_correlation_analysis = correlation_analysis(gdp_mini, inflation_mini)
         export_correlation_to_csv(gdp_inflation_correlation_analysis)
         plot_correlations(gdp_inflation_correlation_analysis, title="GDP and Inflation Correlation")
+        
+        # Linear regression
+        linear_regression(gdp_mini, inflation_mini)
         
     except Exception as e:
         logging.error(f"Fatal error in main pipeline: {e}", exc_info=True)

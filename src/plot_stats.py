@@ -18,7 +18,7 @@ def plot_correlations(correlations: pd.Series, title: str = "Correlation", outpu
     """
     try:
         dir = "figures/"
-        filename = f"{title.replace(" ", "_").lower()}_plot.png"
+        filename = f"{title.replace(' ', '_').lower()}_plot.png"
         correlations = correlations.sort_values()
         
         plt.figure(figsize=(10, 6))
