@@ -42,9 +42,13 @@ def plot_correlations(correlations: pd.Series, title: str = "Correlation", outpu
         logger.error(f"plot_correlations: Unexpected error: {e}")
         
 
-def plot_time_series_decomposition(result: DecomposeResult, country: str):
-    result.plot()
-    plt.suptitle(f"Time Series Decomposition of GDP - {country}", fontsize=16)
-    plt.tight_layout()
-    plt.savefig(f"{DIR}decomposition_results_{country}.png", bbox_inches="tight")
-    plt.show()
+def plot_time_series_decomposition(results: list[DecomposeResult], countries: list[str]):
+    if(len(results) != len(countries)):
+        raise ValueError("Lists must be the same length")
+    
+    for country, result in zip(countries, results):
+        result.plot()
+        plt.suptitle(f"Time Series Decomposition of GDP - {country}", fontsize=16)
+        plt.tight_layout()
+        plt.savefig(f"{DIR}decomposition_results_{country}.png", bbox_inches="tight")
+        plt.show()

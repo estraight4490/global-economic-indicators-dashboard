@@ -94,8 +94,9 @@ def main():
         # linear_regression(gdp_mini, inflation_mini)
         
         # Time series decompose
-        decomposition_result = time_series_decomposition(gdp, "Ireland", "2000", "2023")
-        plot_time_series_decomposition(decomposition_result, "Ireland")
+        countries_decomp = ["United States", "Russian Federation", "Ireland"]
+        decomposition_result = time_series_decomposition(gdp, countries_decomp, "2000", "2023")
+        plot_time_series_decomposition(decomposition_result, countries_decomp)
         
     except Exception as e:
         logging.error(f"Fatal error in main pipeline: {e}", exc_info=True)
