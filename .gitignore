@@ -43,3 +43,6 @@ data/*.zip
 
 # Log files
 logs/*.log
+
+# Output files
+output
