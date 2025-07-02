@@ -92,8 +92,8 @@ def main():
         # plot_correlations(gdp_inflation_correlation_analysis, title="GDP and Inflation Correlation")
         
         # Linear regression
-        lm = linear_regression_sklearn(gdp_mini, inflation_mini)
-        export_linear_regression_sklearn_table(lm, "output/lm_sklearn.txt")
+        # lm = linear_regression_sklearn(gdp_mini, inflation_mini)
+        # export_linear_regression_sklearn_table(lm, "output/lm_sklearn.txt")
         
         
         # Time series decompose
