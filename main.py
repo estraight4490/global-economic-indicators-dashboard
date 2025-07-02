@@ -33,9 +33,9 @@ from src.load_data import load_data
 from src.clean_data import clean_data
 from src.data_helpers import prepare_plot_data, set_country_index, slice_dataframe
 from src.plot_gdp import plot_gdp_trends
-from src.stats import correlation_analysis, linear_regression, time_series_decomposition, growth_rate_analysis, rolling_statistics
+from src.stats import correlation_analysis, linear_regression_statsmodels, time_series_decomposition, growth_rate_analysis, rolling_statistics, linear_regression_sklearn
 from src.plot_stats import plot_correlations, plot_time_series_decomposition, plot_growth_rate_analysis, plot_rolling_statistics
-from src.export_utils import export_correlation_to_csv
+from src.export_utils import export_correlation_to_csv, export_linear_regression_sklearn_table, export_linear_regression_statsmodels_table
 from src.analysis_utils import format_stats_as_dataframe
 
 os.makedirs("logs", exist_ok=True)
@@ -91,8 +91,10 @@ def main():
         # export_correlation_to_csv(gdp_inflation_correlation_analysis)
         # plot_correlations(gdp_inflation_correlation_analysis, title="GDP and Inflation Correlation")
         
-        # # Linear regression
-        # linear_regression(gdp_mini, inflation_mini)
+        # Linear regression
+        lm = linear_regression_sklearn(gdp_mini, inflation_mini)
+        export_linear_regression_sklearn_table(lm, "output/lm_sklearn.txt")
+        
         
         # Time series decompose
         # countries_decomp = ["United States", "Russian Federation", "Ireland"]
@@ -104,9 +106,9 @@ def main():
         # plot_growth_rate_analysis(growth_rates, list(range(START_YEAR, END_YEAR)))
         
         # Rolling statistics
-        rolling_stats = rolling_statistics(gdp, ["Ireland"], str(START_YEAR), str(END_YEAR), 4)
-        formatted_rolling_stats = format_stats_as_dataframe(rolling_stats)
-        plot_rolling_statistics(formatted_rolling_stats)
+        # rolling_stats = rolling_statistics(gdp, ["Ireland"], str(START_YEAR), str(END_YEAR), 4)
+        # formatted_rolling_stats = format_stats_as_dataframe(rolling_stats)
+        # plot_rolling_statistics(formatted_rolling_stats)
         
     except Exception as e:
         logging.error(f"Fatal error in main pipeline: {e}", exc_info=True)

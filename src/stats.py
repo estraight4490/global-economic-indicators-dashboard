@@ -14,49 +14,62 @@ def correlation_analysis(df1: pd.DataFrame, df2: pd.DataFrame) -> pd.Series:
     except Exception as e:
         logger.error(f"correlation_analysis: Unexpected error: {e}")
 
-# TODO: Refactor
-def linear_regression(X: pd.DataFrame, y: pd.DataFrame, output_path: str = "output/linear_regression_report.txt") -> None:
-    model = LinearRegression()
+def linear_regression_statsmodels(X: pd.DataFrame, y: pd.DataFrame) -> dict:
+    
+    countries_models_results = {}
     
     X_copy = X.copy().apply(pd.to_numeric, errors="coerce").interpolate(axis=1, limit_direction="both")
-    y_copy = X.copy().apply(pd.to_numeric, errors="coerce").interpolate(axis=1, limit_direction="both")
-    
-    output_lines = []
-    
+    y_copy = y.copy().apply(pd.to_numeric, errors="coerce").interpolate(axis=1, limit_direction="both")
+        
     for country in X_copy.index:
         x_vals = X_copy.loc[country].values
         y_vals = y_copy.loc[country].values
         
-        # Reshape for sklearn
-        x_vals_2d = x_vals.reshape(-1, 1)
-        model.fit(x_vals_2d, y_vals)
-        y_pred = model.predict(x_vals_2d)
-        
-        r2 = r2_score(y_vals, y_pred)
-        mse = mean_squared_error(y_vals, y_pred)
-        
-        output_lines.append(f"{country}:\n")
-        output_lines.append(f"  Slope     = {model.coef_[0]:.3f}\n")
-        output_lines.append(f"  Intercept = {model.intercept_:.2f}\n")
-        output_lines.append(f"  R² Score  = {r2:.3f}\n")
-        output_lines.append(f"  MSE       = {mse:.2f}\n")
-
         # statsmodels summary (with warnings suppressed)
         try:
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore")
                 sm_X = sm.add_constant(x_vals)
                 sm_model = sm.OLS(y_vals, sm_X).fit()
-                output_lines.append(sm_model.summary().as_text())
+                text_summary = sm_model.summary().as_text()
+                print(text_summary)
+                countries_models_results[country] = text_summary
+                
         except Exception as e:
-            output_lines.append(f"  Statsmodels OLS failed: {e}\n")
+            error_message = f"  Statsmodels OLS failed: {e}\n"
+            print(error_message)
+            countries_models_results[country] = error_message
         
-    # Write to file
-    with open(output_path, "w") as f:
-        f.writelines(output_lines)
+    logger.info("Regression report printed to terminal")
+    
+    return countries_models_results
+    
+def linear_regression_sklearn(X: pd.DataFrame, y: pd.DataFrame) -> dict:
+    countries_results = {}
+    
+    model = LinearRegression()
+    
+    X_copy = X.copy().apply(pd.to_numeric, errors="coerce").interpolate(axis=1, limit_direction="both")
+    y_copy = y.copy().apply(pd.to_numeric, errors="coerce").interpolate(axis=1, limit_direction="both")
+    
+    for country in X_copy.index:
+        x_vals = X_copy.loc[country].values.reshape(-1, 1)
+        y_vals = y_copy.loc[country].values
         
-    logger.info(f"Regression report written to: {output_path}")
-
+        model.fit(x_vals, y_vals)
+        y_pred = model.predict(x_vals)
+        
+        r2 = r2_score(y_vals, y_pred)
+        mse = mean_squared_error(y_vals, y_pred)
+        
+        countries_results[country] = {
+            "slope": model.coef_[0],
+            "intercept": model.intercept_,
+            "r2": r2,
+            "mse": mse
+        }
+    
+    return countries_results
 
 def time_series_decomposition(df: pd.DataFrame, countries: list[str], start_date: str, end_date: str) -> list[DecomposeResult]:
     
@@ -79,9 +92,6 @@ def growth_rate_analysis(df: pd.DataFrame, countries: list[str], start_date: str
         countries_growth_rates[country] = growth_rates
         
     return countries_growth_rates
-
-            
-
 
 def rolling_statistics(df: pd.DataFrame, countries: list[str], start_date: str, end_date: str, years_window: int = 3) -> dict:
     rolling_stats = {}
